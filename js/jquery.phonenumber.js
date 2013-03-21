@@ -18,7 +18,8 @@
   var pluginName = 'phoneNumber';
   var defaults = {
     country: 'FI',
-    format: 'local'
+    format: 'local',
+    maxLength: 20
   };
 
   function Plugin(element, options) {
@@ -33,7 +34,7 @@
   Plugin.prototype = {
     init: function() {
       // Associated PhoneFormat.js methods
-      this.formats = {
+      this.FORMATS = {
         'local': formatLocal,
         'international': formatInternational,
         'e164': formatE164
@@ -46,9 +47,9 @@
     processKeyPress: function(event) {
       var newNumber;
       if (this.isValidInput(event)) {
-        if (this.focusAtEnd()) {
+        if (this.hasFocusAtEnd()) {
           event.preventDefault();
-          newNumber = this.formats[this.options.format.toLowerCase()](
+          newNumber = this.FORMATS[this.options.format.toLowerCase()](
             this.options.country.toUpperCase(),
             this.$element.val() + String.fromCharCode(event.which)
           );
@@ -58,7 +59,7 @@
         event.preventDefault();
       }
     },
-    focusAtEnd: function() {
+    hasFocusAtEnd: function() {
       if (this.$element.prop('selectionStart') === null ||
           this.$element.prop(
             'selectionStart'
@@ -71,7 +72,11 @@
       var SPACE = 32,
         SPECIAL_CHAR_WEBKIT = 0,
         SPECIAL_CHAR_FIREFOX = 33;
-      if (event.metaKey || event.ctrlKey) {
+      if (this.$element.val().length >= this.options.maxLength &&
+        !this.hasSelectedText(event)) {
+        // Maximum length of phone number exceeded and no text is selected
+        return false;
+      } else if (event.metaKey || event.ctrlKey) {
         return true;
       } else if (event.which === SPACE) {
         return false;
@@ -79,13 +84,19 @@
         return true;
       } else if (event.which < SPECIAL_CHAR_FIREFOX) {
         return true;
-      } else if (this.$element.val().length >= 16) {
-        return false;
       } else {
         var re = /^\d$/;
         return re.test(String.fromCharCode(event.which)) ||
           String.fromCharCode(event.which) === '+';
       }
+    },
+    hasSelectedText: function() {
+      if (this.$element.prop('selectionStart') !== null &&
+        this.$element.prop('selectionStart') !==
+        this.$element.prop('selectionEnd')) {
+        return true;
+      }
+      return false;
     }
   };
 
