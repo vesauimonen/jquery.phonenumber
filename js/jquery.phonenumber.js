@@ -17,8 +17,6 @@
 
   var pluginName = 'phoneNumber';
   var defaults = {
-    country: 'FI',
-    format: 'local',
     maxLength: 20
   };
 
@@ -49,10 +47,14 @@
       if (this.isValidInput(event)) {
         if (this.hasFocusAtEnd()) {
           event.preventDefault();
-          newNumber = this.FORMATS[this.options.format.toLowerCase()](
-            this.options.country.toUpperCase(),
-            this.$element.val() + String.fromCharCode(event.which)
-          );
+          if (typeof this.options.country === 'undefined') {
+            newNumber = this.$element.val() + String.fromCharCode(event.which);
+          } else {
+            newNumber = this.FORMATS[this.options.format.toLowerCase()](
+              this.options.country.toUpperCase(),
+              this.$element.val() + String.fromCharCode(event.which)
+            );
+          }
           this.$element.val(newNumber);
         }
       } else {
@@ -87,7 +89,8 @@
       } else {
         var re = /^\d$/;
         return re.test(String.fromCharCode(event.which)) ||
-          String.fromCharCode(event.which) === '+';
+          String.fromCharCode(event.which) === '+' ||
+          String.fromCharCode(event.which) === '-';
       }
     },
     hasSelectedText: function() {
