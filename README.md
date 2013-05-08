@@ -16,11 +16,12 @@ Make sure that both jQuery and PhoneFormat.js are loaded before using phoneNumbe
 
 Usage
 -----
-
-    $('input.phone-number').phoneNumber({
-        'format': 'local',
-        'country': 'FI'
-    });
+```javascript
+$('input[type=tel]').phoneNumber({
+    'format': 'local',
+    'country': 'FI'
+});
+```
     
 No formatting is made if country code is not specified. In this case only illegal characters are checked.
     
