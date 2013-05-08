@@ -22,6 +22,8 @@ Usage
         'country': 'FI'
     });
     
+No formatting is made if country code is not specified. In this case only illegal characters are checked.
+    
 Options
 -------
 
