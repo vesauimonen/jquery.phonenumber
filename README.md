@@ -10,7 +10,7 @@ Prerequisites
 -------------
 
 * jQuery
-* PhoneFormat.js (http://www.phoneformat.com/)
+* PhoneFormat.js (https://github.com/albeebe/phoneformat.js)
 
 Make sure that both jQuery and PhoneFormat.js are loaded before using phoneNumber.js
 
