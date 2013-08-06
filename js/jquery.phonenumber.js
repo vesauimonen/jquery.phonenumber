@@ -43,18 +43,20 @@
       });
     },
     processKeyPress: function(event) {
-      var newNumber;
+      var newNumber, oldNumber;
       if (this.isValidInput(event)) {
         if (this.hasFocusAtEnd()) {
           event.preventDefault();
-          if (typeof this.options.country === 'undefined') {
-            newNumber = this.$element.val() + String.fromCharCode(event.which);
+          oldNumber = this.$element.val();
+          if (event.which == 8) {
+            oldNumber = oldNumber.slice(0,-1);
           } else {
-            newNumber = this.FORMATS[this.options.format.toLowerCase()](
-              this.options.country.toUpperCase(),
-              this.$element.val() + String.fromCharCode(event.which)
-            );
+            oldNumber = oldNumber + String.fromCharCode(event.which);
           }
+          newNumber = this.FORMATS[this.options.format.toLowerCase()](
+            this.options.country.toUpperCase(),
+            oldNumber
+          );
           this.$element.val(newNumber);
         }
       } else {
