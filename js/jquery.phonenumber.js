@@ -41,27 +41,39 @@
       this.$element.keypress(function(event) {
         self.processKeyPress(event);
       });
+      this.$element.on('paste', function(event) {
+        self.processPaste(event);
+      });
     },
     processKeyPress: function(event) {
-      var newNumber, oldNumber;
       if (this.isValidInput(event)) {
-        if (this.hasFocusAtEnd()) {
+        if (this.hasFocusAtEnd() && (!(event.metaKey || event.ctrlKey))) {
           event.preventDefault();
-          oldNumber = this.$element.val();
-          if (event.which == 8) {
-            oldNumber = oldNumber.slice(0,-1);
-          } else {
-            oldNumber = oldNumber + String.fromCharCode(event.which);
-          }
-          newNumber = this.FORMATS[this.options.format.toLowerCase()](
-            this.options.country.toUpperCase(),
-            oldNumber
-          );
-          this.$element.val(newNumber);
+          this.formatValue(event);
         }
       } else {
         event.preventDefault();
       }
+    },
+    processPaste: function(event) {
+      var self = this;
+      setTimeout(function() {
+        self.formatValue(event);
+      }, 100);
+    },
+    formatValue: function(event) {
+      var newNumber, oldNumber;
+      oldNumber = this.$element.val();
+      if (event.which == 8) {
+        oldNumber = oldNumber.slice(0,-1);
+      } else {
+        oldNumber = oldNumber + String.fromCharCode(event.which);
+      }
+      newNumber = this.FORMATS[this.options.format.toLowerCase()](
+        this.options.country.toUpperCase(),
+        oldNumber
+      );
+      this.$element.val(newNumber);
     },
     hasFocusAtEnd: function() {
       if (this.$element.prop('selectionStart') === null ||
